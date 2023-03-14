@@ -1,0 +1,13 @@
+runtime: nodejs18
+
+env: standard
+
+handlers:
+# Serve all static files with urls ending with a file extension
+- url: /css
+  static_dir: public/css
+- url: /js
+  static_dir: public/js
+- url: /
+  static_files: views/index.html
+  upload: views/index.html
