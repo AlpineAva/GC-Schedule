@@ -1,23 +1,40 @@
 const DAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+var json = "";
 
-function applySearchTerms() {
-    let searchTerm = document.getElementById('search').value;
-    console.log(searchTerm);
+function getFilteredResults() {
+    let filter = document.getElementById('search').value;
+    if(!filter) {
+        return json;
+    }
+
+    let results = [];
+    for(let i = 0; i < json.length; i++) {
+        let opponentName = json[i].opponent_name;
+        let location = json[i].location;
+        
+        if(opponentName.includes(filter) || location.includes(filter)) {
+            results.push(json[i]);
+        }
+    }
+
+    return results;
 }
 
-function updateScheduleView(json) {
+function updateScheduleView() {
     // Format the data into YYYY-MM buckets
     let monthBuckets = {};
-    for(let i = 0; i < json.length; i++) {
-        let key = json[i].start.datetime.slice(0, 7); // YYYY-MM
+    let filteredJson = getFilteredResults();
+    for(let i = 0; i < filteredJson.length; i++) {
+        let key = filteredJson[i].start.datetime.slice(0, 7); // YYYY-MM
         if(!monthBuckets[key]) {
             monthBuckets[key] = [];
         }
-        monthBuckets[key].push(json[i]);
+        monthBuckets[key].push(filteredJson[i]);
     }
 
     // Create a new table for each element
     let schedule = document.getElementById("schedule-view");
+    schedule.innerHTML = ""; // reset the view...
     let keys = Object.keys(monthBuckets);
     for(let i = 0; i < keys.length; i++) {
         schedule.innerHTML += createTableTitle(keys[i]);
@@ -64,9 +81,12 @@ function createTable(bucket) {
 }
 
 const searchListener = document.getElementById('search');
-searchListener.addEventListener('input', applySearchTerms);
+searchListener.addEventListener('input', updateScheduleView);
 
 
 fetch("./schedule")
   .then((response) => response.json())
-  .then((data) => updateScheduleView(data));
+  .then((data) => {
+    json = data;
+    updateScheduleView();
+  });
