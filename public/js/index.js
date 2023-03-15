@@ -36,9 +36,14 @@ function updateScheduleView() {
     let schedule = document.getElementById("schedule-view");
     schedule.innerHTML = ""; // reset the view...
     let keys = Object.keys(monthBuckets);
-    for(let i = 0; i < keys.length; i++) {
-        schedule.innerHTML += createTableTitle(keys[i]);
-        schedule.innerHTML += createTable(monthBuckets[keys[i]]);
+    console.log(keys.length);
+    if(keys.length === 0) {
+        schedule.innerHTML = `<div>No Results</div>`
+    } else {
+        for(let i = 0; i < keys.length; i++) {
+            schedule.innerHTML += createTableTitle(keys[i]);
+            schedule.innerHTML += createTable(monthBuckets[keys[i]]);
+        }
     }
 }
 
