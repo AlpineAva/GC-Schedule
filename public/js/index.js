@@ -1,5 +1,10 @@
 const DAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
 
+function applySearchTerms() {
+    let searchTerm = document.getElementById('search').value;
+    console.log(searchTerm);
+}
+
 function updateScheduleView(json) {
     // Format the data into YYYY-MM buckets
     let monthBuckets = {};
@@ -10,13 +15,11 @@ function updateScheduleView(json) {
         }
         monthBuckets[key].push(json[i]);
     }
-    console.log(monthBuckets);
 
     // Create a new table for each element
     let schedule = document.getElementById("schedule-view");
     let keys = Object.keys(monthBuckets);
     for(let i = 0; i < keys.length; i++) {
-        console.log('bucket)');
         schedule.innerHTML += createTableTitle(keys[i]);
         schedule.innerHTML += createTable(monthBuckets[keys[i]]);
     }
@@ -31,11 +34,9 @@ function createTableTitle(key) {
 
 function createTable(bucket) {
     let rowHTML = '';
-    console.log(bucket);
     for(let i = 0; i < bucket.length; i++) {
         let e = bucket[i];
         let date = new Date(e.start.datetime);
-        //console.log(e);
         rowHTML += `<tr class="` + (i+1 == bucket.length ? 'bottom-row-style' : 'row-style') + `">
         <td class="td-style">
             <div class="left-column-style">
@@ -62,7 +63,8 @@ function createTable(bucket) {
             <br/>`
 }
 
-console.log('Hello World');
+const searchListener = document.getElementById('search');
+searchListener.addEventListener('input', applySearchTerms);
 
 
 fetch("./schedule")
